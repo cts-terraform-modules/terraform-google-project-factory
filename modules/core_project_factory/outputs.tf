@@ -81,3 +81,4 @@ output "api_s_account_fmt" {
   value       = local.api_s_account_fmt
   description = "API service account email formatted for terraform use"
 }
+

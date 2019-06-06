@@ -115,7 +115,7 @@ resource "null_resource" "check_if_shared_vpc_subnets_contains_items_with_invali
   ) == 0 ? 0 : 1
 
   provisioner "local-exec" {
-    command     = "false"
+    command = "false"
     interpreter = ["bash", "-c"]
   }
 }
@@ -143,8 +143,8 @@ resource "google_resource_manager_lien" "lien" {
   count        = var.lien ? 1 : 0
   parent       = "projects/${google_project.main.number}"
   restrictions = ["resourcemanager.projects.delete"]
-  origin       = "project-factory"
-  reason       = "Project Factory lien"
+  origin = "project-factory"
+  reason = "Project Factory lien"
 }
 
 /******************************************
@@ -241,7 +241,7 @@ EOD
   Default Service Account configuration
  *****************************************/
 resource "google_service_account" "default_service_account" {
-  account_id   = "project-service-account"
+  account_id = "project-service-account"
   display_name = "${var.name} Project Service Account"
   project      = google_project.main.project_id
 }

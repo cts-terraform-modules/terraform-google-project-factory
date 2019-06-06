@@ -170,3 +170,4 @@ variable "shared_vpc_enabled" {
   type        = bool
   default     = false
 }
+
