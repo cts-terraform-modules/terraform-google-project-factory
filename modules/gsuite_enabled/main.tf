@@ -115,3 +115,4 @@ module "budget" {
   alert_spent_percents = var.budget_alert_spent_percents
   alert_pubsub_topic   = var.budget_alert_pubsub_topic
 }
+

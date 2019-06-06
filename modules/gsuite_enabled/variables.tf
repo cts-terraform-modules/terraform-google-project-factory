@@ -171,38 +171,3 @@ variable "shared_vpc_enabled" {
   default     = false
 }
 
-variable "python_interpreter_path" {
-  description = "Python interpreter path for precondition check script."
-  type        = string
-  default     = "python3"
-}
-
-variable "budget_amount" {
-  description = "The amount to use for a budget alert"
-  type        = number
-  default     = null
-}
-
-variable "budget_alert_pubsub_topic" {
-  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`"
-  type        = string
-  default     = null
-}
-
-variable "budget_alert_spent_percents" {
-  description = "A list of percentages of the budget to alert on when threshold is exceeded"
-  type        = list(number)
-  default     = [0.5, 0.7, 1.0]
-}
-
-variable "use_tf_google_credentials_env_var" {
-  description = "Use GOOGLE_CREDENTIALS environment variable to run gcloud auth activate-service-account with."
-  type        = bool
-  default     = false
-}
-
-variable "skip_gcloud_download" {
-  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
-  type        = bool
-  default     = false
-}
