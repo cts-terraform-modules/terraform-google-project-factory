@@ -113,12 +113,12 @@ class OrgPermissions:
 
     def validate(self, credentials):
         body = {"permissions": self.permissions}
-        resource = "organizations/" + self.org_id
+        resource = "folders/" + self.folder_id
 
         # no permissions to validate
         if len(self.permissions) == 0:
             return {
-                "type": "Service account permissions on organization",
+                "type": "Service account permissions on folder",
                 "name": resource,
                 "satisfied": [],
                 "unsatisfied": []
