@@ -68,82 +68,6 @@ class Requirements:
             "unsatisfied": self.unsatisfied(),
         }
 
-
-class OrgPermissions:
-    # Permissions that the service account must have for any organization
-    ALL_PERMISSIONS = []
-
-    # Permissions required when the service account is attaching a new project
-    # to a shared VPC
-    SHARED_VPC_PERMISSIONS = [
-        # Typically granted with `roles/compute.networkAdmin`
-        "compute.subnetworks.setIamPolicy",
-
-        # Typically granted with `roles/compute.xpnAdmin`
-        "compute.organizations.enableXpnResource",
-    ]
-
-    # Permissions required when the service account is creating a new project
-    # directly within an organization (as opposed to a folder)
-    PARENT_PERMISSIONS = [
-        # Typically granted with `roles/resourcemanager.projectCreator`
-        "resourcemanager.projects.create"
-    ]
-
-    def __init__(self, org_id, shared_vpc=False, parent=False):
-        """
-        Create a new organization validator.
-
-        Args:
-            org_id (str): The organization ID
-            shared_vpc (bool): Whether shared VPC permissions should be checked
-            parent (bool): Whether parent permissions should be checked
-        """
-        self.org_id = org_id
-        self.shared_vpc = shared_vpc
-        self.parent = parent
-
-        self.permissions = self.ALL_PERMISSIONS[:]
-
-        if self.shared_vpc:
-            self.permissions += self.SHARED_VPC_PERMISSIONS
-
-        if self.parent:
-            self.permissions += self.PARENT_PERMISSIONS
-
-    def validate(self, credentials):
-        body = {"permissions": self.permissions}
-        resource = "organizations/" + self.org_id
-
-        # no permissions to validate
-        if len(self.permissions) == 0:
-            return {
-                "type": "Service account permissions on organization",
-                "name": resource,
-                "satisfied": [],
-                "unsatisfied": []
-            }
-
-        service = discovery.build(
-            'cloudresourcemanager', 'v1',
-            credentials=credentials
-        )
-
-        request = service.organizations().testIamPermissions(
-            resource=resource,
-            body=body)
-        response = request.execute()
-
-        req = Requirements(
-            "Service account permissions on organization",
-            resource,
-            self.permissions,
-            response.get("permissions", []),
-        )
-
-        return req.asdict()
-
-
 class FolderPermissions:
     # Permissions required when the service account is creating a project
     # within a folder (as opposed to an organization).
@@ -152,13 +76,28 @@ class FolderPermissions:
         "resourcemanager.projects.create",
     ]
 
-    def __init__(self, folder_id, parent=False):
+    SHARED_VPC_PERMISSIONS = [
+        # Typically granted with `roles/compute.networkAdmin`
+        "compute.subnetworks.setIamPolicy",
+
+        # Typically granted with `roles/compute.xpnAdmin`
+        "compute.organizations.enableXpnResource",
+    ]
+
+    def __init__(self, folder_id, shared_vpc, parent=False):
         self.folder_id = folder_id
+        self.shared_vpc = shared_vpc
         self.parent = parent
+
         self.permissions = []
+
+        if self.shared_vpc:
+            self.permissions += self.SHARED_VPC_PERMISSIONS
 
         if self.parent:
             self.permissions += self.PARENT_PERMISSIONS
+
+        
 
     def validate(self, credentials):
         service = discovery.build(
@@ -418,14 +357,10 @@ def validators_for(opts, seed_project):
         has_shared_vpc = False
 
     if opts.folder_id is not None:
-        validators.append(FolderPermissions(opts.folder_id, parent=True))
+        validators.append(FolderPermissions(opts.folder_id, parent=True, shared_vpc=has_shared_vpc))
         org_parent = False
     else:
         org_parent = True
-
-    validators.append(
-        OrgPermissions(
-            opts.org_id, parent=org_parent, shared_vpc=has_shared_vpc))
 
     return validators
 
