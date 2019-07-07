@@ -482,3 +482,19 @@ resource "google_project_iam_member" "gke_host_agent" {
   ]
 }
 
+/******************************************
+  For firewall manipulation: role granted to GKE service account for GKE on shared VPC
+ *****************************************/
+resource "google_project_iam_member" "gke_host_agent" {
+  count = local.gke_shared_vpc_enabled ? 1 : 0
+
+  project = var.shared_vpc
+  role = "roles/compute.securityAdmin"
+  member = local.gke_s_account_fmt
+
+  depends_on = [
+    google_project_service.project_services,
+    google_project_services.project_services_authority,
+  ]
+}
+
