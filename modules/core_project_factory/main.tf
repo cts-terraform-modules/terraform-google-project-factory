@@ -473,3 +473,23 @@ resource "google_project_service" "enable_access_context_manager" {
   project = google_project.main.number
   service = "accesscontextmanager.googleapis.com"
 }
+
+/******************************************
+  For firewall manipulation: role granted to GKE service account for GKE on shared VPC
+ *****************************************/
+
+# TODO: make security admin powers in shared VPC optional
+# TODO: limit this role only to the firewall permissions needed
+resource "google_project_iam_member" "gke_security_admin" {
+  count = local.gke_shared_vpc_enabled ? 1 : 0
+
+  project = var.shared_vpc
+  role = "roles/compute.securityAdmin"
+  member = local.gke_s_account_fmt
+
+  depends_on = [
+    google_project_service.project_services,
+    google_project_services.project_services_authority,
+  ]
+}
+
