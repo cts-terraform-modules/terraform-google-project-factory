@@ -105,7 +105,7 @@ resource "null_resource" "check_if_shared_vpc_subnets_contains_items_with_invali
   ) == 0 ? 0 : 1
 
   provisioner "local-exec" {
-    command = "false"
+    command     = "false"
     interpreter = ["bash", "-c"]
   }
 }
@@ -133,8 +133,8 @@ resource "google_resource_manager_lien" "lien" {
   count        = var.lien ? 1 : 0
   parent       = "projects/${google_project.main.number}"
   restrictions = ["resourcemanager.projects.delete"]
-  origin = "project-factory"
-  reason = "Project Factory lien"
+  origin       = "project-factory"
+  reason       = "Project Factory lien"
 }
 
 /******************************************
@@ -262,7 +262,7 @@ module "gcloud_disable" {
   Default Service Account configuration
  *****************************************/
 resource "google_service_account" "default_service_account" {
-  account_id = "project-service-account"
+  account_id   = "project-service-account"
   display_name = "${var.name} Project Service Account"
   project      = google_project.main.project_id
 }
@@ -484,12 +484,11 @@ resource "google_project_iam_member" "gke_security_admin" {
   count = local.gke_shared_vpc_enabled ? 1 : 0
 
   project = var.shared_vpc
-  role = "roles/compute.securityAdmin"
-  member = local.gke_s_account_fmt
+  role    = "roles/compute.securityAdmin"
+  member  = local.gke_s_account_fmt
 
   depends_on = [
-    google_project_service.project_services,
-    google_project_services.project_services_authority,
+    module.project_services,
   ]
 }
 
