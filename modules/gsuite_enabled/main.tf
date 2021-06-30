@@ -79,15 +79,16 @@ module "project-factory" {
   name                              = var.name
   project_id                        = var.project_id
   shared_vpc                        = var.shared_vpc
-  shared_vpc_enabled                = var.shared_vpc_enabled
+  enable_shared_vpc_service_project = var.enable_shared_vpc_service_project
+  enable_shared_vpc_host_project    = var.enable_shared_vpc_host_project
   billing_account                   = var.billing_account
   folder_id                         = var.folder_id
+  create_project_sa                 = var.create_project_sa
+  project_sa_name                   = var.project_sa_name
   sa_role                           = var.sa_role
   activate_apis                     = var.activate_apis
   usage_bucket_name                 = var.usage_bucket_name
   usage_bucket_prefix               = var.usage_bucket_prefix
-  credentials_path                  = var.credentials_path
-  impersonate_service_account       = var.impersonate_service_account
   shared_vpc_subnets                = var.shared_vpc_subnets
   labels                            = var.labels
   bucket_project                    = var.bucket_project
@@ -98,9 +99,6 @@ module "project-factory" {
   disable_services_on_destroy       = var.disable_services_on_destroy
   default_service_account           = var.default_service_account
   disable_dependent_services        = var.disable_dependent_services
-  python_interpreter_path           = var.python_interpreter_path
-  use_tf_google_credentials_env_var = var.use_tf_google_credentials_env_var
-  skip_gcloud_download              = var.skip_gcloud_download
 }
 
 /******************************************
@@ -110,9 +108,19 @@ module "budget" {
   source        = "../budget"
   create_budget = var.budget_amount != null
 
-  projects             = [module.project-factory.project_id]
-  billing_account      = var.billing_account
-  amount               = var.budget_amount
-  alert_spent_percents = var.budget_alert_spent_percents
-  alert_pubsub_topic   = var.budget_alert_pubsub_topic
+  projects                         = [module.project-factory.project_id]
+  billing_account                  = var.billing_account
+  amount                           = var.budget_amount
+  alert_spent_percents             = var.budget_alert_spent_percents
+  alert_pubsub_topic               = var.budget_alert_pubsub_topic
+  monitoring_notification_channels = var.budget_monitoring_notification_channels
+}
+
+/******************************************
+  Consumer Quota
+ *****************************************/
+module "project_quota_manager" {
+  source          = "../../modules/quota_manager"
+  project_id      = module.project-factory.project_id
+  consumer_quotas = var.consumer_quotas
 }

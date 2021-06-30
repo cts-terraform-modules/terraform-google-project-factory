@@ -58,13 +58,13 @@ locals {
 
 module "vpc" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 1.1"
+  version = "~> 2.0"
 
   network_name = "pf-test-int-full-${var.random_string_for_testing}"
   project_id   = var.shared_vpc
 
   # The provided project must already be a Shared VPC host
-  shared_vpc_host = "false"
+  shared_vpc_host = false
 
   subnets = [
     {
@@ -99,32 +99,33 @@ module "project-factory" {
   source = "../../../modules/gsuite_enabled"
 
   name              = "pf-ci-test-full-name-${var.random_string_for_testing}"
-  random_project_id = "false"
+  random_project_id = false
   project_id        = "pf-ci-test-full-id-${var.random_string_for_testing}"
 
-  domain              = var.domain
-  org_id              = var.org_id
-  folder_id           = var.folder_id
-  usage_bucket_name   = var.usage_bucket_name
-  usage_bucket_prefix = var.usage_bucket_prefix
-  billing_account     = var.billing_account
-  create_group        = true
-  group_role          = var.group_role
-  group_name          = var.group_name
-  shared_vpc          = var.shared_vpc
-  shared_vpc_enabled  = true
-  shared_vpc_subnets  = local.shared_vpc_subnets
-  sa_role             = var.sa_role
-  sa_group            = var.sa_group
-  lien                = "true"
+  domain                            = var.domain
+  org_id                            = var.org_id
+  folder_id                         = var.folder_id
+  usage_bucket_name                 = var.usage_bucket_name
+  usage_bucket_prefix               = var.usage_bucket_prefix
+  billing_account                   = var.billing_account
+  create_group                      = true
+  group_role                        = var.group_role
+  group_name                        = var.group_name
+  shared_vpc                        = var.shared_vpc
+  enable_shared_vpc_service_project = true
+  shared_vpc_subnets                = local.shared_vpc_subnets
+  sa_role                           = var.sa_role
+  sa_group                          = var.sa_group
+  lien                              = true
 
   activate_apis = [
     "compute.googleapis.com",
     "container.googleapis.com",
+    "dataflow.googleapis.com",
   ]
 
-  default_service_account     = "delete"
-  disable_services_on_destroy = "false"
+  default_service_account     = "DELETE"
+  disable_services_on_destroy = false
 }
 
 resource "google_service_account" "extra_service_account" {

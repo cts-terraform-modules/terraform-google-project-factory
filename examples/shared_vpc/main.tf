@@ -42,13 +42,13 @@ provider "random" {
   Host Project Creation
  *****************************************/
 module "host-project" {
-  source               = "../../"
-  random_project_id    = true
-  name                 = var.host_project_name
-  org_id               = var.organization_id
-  folder_id            = var.folder_id
-  billing_account      = var.billing_account
-  skip_gcloud_download = true
+  source                         = "../../"
+  random_project_id              = true
+  name                           = var.host_project_name
+  org_id                         = var.organization_id
+  folder_id                      = var.folder_id
+  billing_account                = var.billing_account
+  enable_shared_vpc_host_project = true
 }
 
 /******************************************
@@ -56,13 +56,11 @@ module "host-project" {
  *****************************************/
 module "vpc" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 2.1.0"
+  version = "~> 2.5.0"
 
-  project_id   = module.host-project.project_id
-  network_name = var.network_name
-
+  project_id                             = module.host-project.project_id
+  network_name                           = var.network_name
   delete_default_internet_gateway_routes = true
-  shared_vpc_host                        = true
 
   subnets = [
     {
@@ -104,44 +102,42 @@ module "vpc" {
   Service Project Creation
  *****************************************/
 module "service-project" {
-  source = "../../modules/shared_vpc"
+  source = "../../modules/svpc_service_project"
 
   name              = var.service_project_name
-  random_project_id = "false"
+  random_project_id = false
 
-  org_id             = var.organization_id
-  folder_id          = var.folder_id
-  billing_account    = var.billing_account
-  shared_vpc_enabled = true
+  org_id          = var.organization_id
+  folder_id       = var.folder_id
+  billing_account = var.billing_account
 
-  shared_vpc         = module.vpc.project_id
+  shared_vpc         = module.host-project.project_id
   shared_vpc_subnets = module.vpc.subnets_self_links
 
   activate_apis = [
     "compute.googleapis.com",
     "container.googleapis.com",
     "dataproc.googleapis.com",
+    "dataflow.googleapis.com",
   ]
 
-  disable_services_on_destroy = "false"
-  skip_gcloud_download        = "true"
+  disable_services_on_destroy = false
 }
 
 /******************************************
   Second Service Project Creation
  *****************************************/
 module "service-project-b" {
-  source = "../../modules/shared_vpc"
+  source = "../../modules/svpc_service_project"
 
   name              = "b-${var.service_project_name}"
-  random_project_id = "false"
+  random_project_id = false
 
-  org_id             = var.organization_id
-  folder_id          = var.folder_id
-  billing_account    = var.billing_account
-  shared_vpc_enabled = true
+  org_id          = var.organization_id
+  folder_id       = var.folder_id
+  billing_account = var.billing_account
 
-  shared_vpc = module.vpc.project_id
+  shared_vpc = module.host-project.project_id
 
   activate_apis = [
     "compute.googleapis.com",
@@ -149,8 +145,15 @@ module "service-project-b" {
     "dataproc.googleapis.com",
   ]
 
-  disable_services_on_destroy = "false"
-  skip_gcloud_download        = "true"
+  activate_api_identities = [{
+    api = "healthcare.googleapis.com"
+    roles = [
+      "roles/healthcare.serviceAgent",
+      "roles/bigquery.jobUser",
+    ]
+  }]
+
+  disable_services_on_destroy = false
 }
 
 /******************************************

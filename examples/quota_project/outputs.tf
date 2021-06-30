@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
-terraform {
-  required_version = ">=0.12.6, <0.14"
+output "quota_overrides" {
+  description = "The server-generated names of the quota override in the provided project."
+  value       = module.project_quota_manager.quota_overrides
 }

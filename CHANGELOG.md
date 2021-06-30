@@ -6,6 +6,167 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Extending the adopted spec, each change should have a link to its corresponding pull request appended.
 
+## [11.0.0](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v10.3.2...v11.0.0) (2021-06-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* Buckets now enable uniform bucket-level access by default. See the upgrade guide for details.
+
+### Features
+
+* Add support for enforcing uniform IAM access to project GCS bucket ([#585](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/585)) ([d9bd377](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/d9bd377fbbac4fc4511470dde324b7048d78118c))
+
+
+### Bug Fixes
+
+* billing budget tests ([#594](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/594)) ([64461a2](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/64461a22b225960357ef866bdef8c1d2693733f7))
+* Increasing versions of null & random providers to support arm ([#583](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/583)) ([28547ed](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/28547edf3b9fbd5d89aa2ddb1dc50a409d556826))
+* remove unused vars, add upgrade guide ([#596](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/596)) ([e4c9b03](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/e4c9b0362166ebb2ce6cab1a54d55fc3014f00f3))
+
+### [10.3.2](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v10.3.1...v10.3.2) (2021-04-05)
+
+
+### Bug Fixes
+
+* Simplify project_id output in core_project_factory ([#572](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/572)) ([1bde0af](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/1bde0af3d3087dbd28c5b8bf296fccac094499e4))
+
+### [10.3.1](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v10.3.0...v10.3.1) (2021-03-30)
+
+
+### Bug Fixes
+
+* Add force_destroy option for included GCS bucket ([#545](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/545)) ([1774999](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/1774999a9c70c853d8921c5df665487b30c75e22))
+* Change quota manager submodule required versions to allow 0.14 ([#569](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/569)) ([448456c](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/448456c151617194359c952e9a671a37e726ff49))
+* Replace "true"/"false" strings with bool values ([#559](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/559)) ([2d082f3](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/2d082f3197fd66331e75f25e48a8f97e1679cba8))
+
+## [10.3.0](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v10.2.2...v10.3.0) (2021-03-24)
+
+
+### Features
+
+* Allow Cloud Composer environment on the shared vpc. ([#566](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/566)) ([0b8509f](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/0b8509fb509e7500bbe3f4d9d33fd677a7960ff5))
+* Allow customizing default service account name ([#565](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/565)) ([020e308](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/020e308a55442f94e36be9a7b6702017c94e436e))
+* Allow override of quotas on projects ([#468](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/468)) ([045923d](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/045923d8ec3b2592f219ff43d7782f8274a7d12b))
+
+
+### Bug Fixes
+
+* Provide correct Cloud Composer roles for Shared VPC acces ([#567](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/567)) ([1f3130f](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/1f3130fcff8e3c30af0da67cbec6acebbbcaf33c))
+
+### [10.2.2](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v10.2.1...v10.2.2) (2021-03-17)
+
+
+### Bug Fixes
+
+* Enable configuring shared_vpc resources at folder level ([#560](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/560)) ([d3fa559](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/d3fa559e2eab9f53bb0d4eff876ba1a7bbe8fe2f))
+
+### [10.2.1](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v10.2.0...v10.2.1) (2021-03-11)
+
+
+### Bug Fixes
+
+* Add explicit depends_on for budget project data source ([#556](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/556)) ([454076a](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/454076ab4f4476f9f53d80eb57922eb9d467f400))
+
+## [10.2.0](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v10.1.1...v10.2.0) (2021-03-04)
+
+
+### Features
+
+* Expose service identity Service Account emails ([#548](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/548)) ([62c168d](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/62c168dd7cd54a8935462448aa8becd5372a1726))
+
+
+### Bug Fixes
+
+* Change budget module to pass project numbers ([#550](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/550)) ([5c715d8](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/5c715d8d944ff77a53263e1674ab346f92145f39))
+
+### [10.1.1](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v10.1.0...v10.1.1) (2021-01-27)
+
+
+### Bug Fixes
+
+* Additional roles should only granted for Shared VPC when attaching to a service project ([#542](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/542)) ([99093de](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/99093dece468cde277e8a5e812d634cf94cb92d2))
+
+## [10.1.0](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v10.0.1...v10.1.0) (2021-01-20)
+
+
+### Features
+
+* Add labels support to projects bucket ([#534](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/534)) ([67a0b04](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/67a0b045ae013f4c5f410f0103a857789ee5b63a))
+* expose grant_services_security_admin_role var ([#536](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/536)) ([c41ba36](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/c41ba360a6bc6800a30d284b8fa23eb3ef5a8d7f))
+
+
+### Bug Fixes
+
+* Make project service account creation optional ([#528](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/528)) ([4350c5d](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/4350c5d25a5c5bdb4fa09e346e63cc4cf8e9f48f))
+
+### [10.0.1](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v10.0.0...v10.0.1) (2020-12-16)
+
+
+### Bug Fixes
+
+* Pass service project number for root module ([#496](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/496)) ([#520](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/520)) ([29ff90f](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/29ff90f83c0b1825d0588afe242b25cb7cfb65e8))
+
+## [10.0.0](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v9.2.0...v10.0.0) (2020-12-15)
+
+
+
+### ⚠ BREAKING CHANGES
+
+* Minimum Terraform version increased to 0.13.
+* All null_resources for executing gcloud scripts have been removed. See the [upgrade guide](https://github.com/terraform-google-modules/terraform-google-project-factory/blob/master/docs/upgrading_to_project_factory_v10.0.md) for details.
+* Renamed the shared_vpc submodule to `svpc_service_project`. [#517](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/517)) ([86819d7](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/86819d74284afa9e13ccf1bad3d18e521a472ff1))
+
+
+### Features
+
+* add TF 0.13 constraint and module attribution ([#513](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/513)) ([f6df34c](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/f6df34c57abcd94abe44785454c53ce26c9741c4))
+* support activate_api_identities in shared_vpc submodule ([#509](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/509)) ([8c5698c](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/8c5698c164d9b03f86cb5ba25d0b3a28a5e1c520))
+* **terraform:** Add support Terraform 0.14 by bumping version constraint ([#505](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/505)) ([8c01c41](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/8c01c419849c172ff579a7f0f4b655a9055c9719))
+
+
+### Bug Fixes
+
+* Add billingbudgets.googleapis.com to precondition script. ([#493](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/493)) ([f9b53c3](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/f9b53c34425790cf95d8912db113956f2d5406ec))
+* Add count variable to does not create the resource when value is keep ([#498](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/498)) ([a3deaad](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/a3deaad77881a09e73104984124cdd0740a09e8f))
+* Add shared_vpc features back to rood module ([#446](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/446)) ([0a6b9b9](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/0a6b9b9b6226484cba16a210f429817fd0d03aed))
+* All dependencies on gcloud have been removed. ([#491](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/491)) ([5886a4e](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/5886a4e4430f551266710d6f635860963be6a4ec))
+* readme link to svpc example ([#515](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/515)) ([ce1d46e](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/ce1d46e8ab9d9b895254c3c86b89437045875121))
+* Remove whitespace in test/setup-sa ([#495](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/495)) ([6d90ff3](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/6d90ff3869ab390fd3945c222db82c6abe44a456))
+* Support passing service project number to shared_vpc_access to be Terraform 0.13 compatible ([#500](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/500)) ([825d07b](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/825d07b19417827d6ad66f9a8dd437b53de32bbc))
+
+## [9.2.0](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v9.1.0...v9.2.0) (2020-10-16)
+
+
+### Features
+
+* Add `enable_shared_vpc_host_project` to create project as shared VPC host project ([#465](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/465)) ([3b269be](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/3b269bee7bb7aeda53751fb4d3d5b49b8e41fd6a))
+* add apis related outputs to main module ([#470](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/470)) ([abc507f](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/abc507fdd0735ee655c350ce90c58d44816c5779))
+* Add budget_monitoring_notification_channels to modules including budgets ([#476](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/476)) ([d1665d1](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/d1665d10e7502eb382bc460a93a59439424c9c19))
+* Add impersonate_service_account to shared_vpc module to pass to core_project_factory ([#477](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/477)) ([e9f0c8f](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/e9f0c8fad2ccffac52a9733d91a53320c2d41643))
+* Removed preconditions script from Terraform execution ([#478](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/478)) ([79f7c95](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/79f7c953a5267b0d22c2e9396136e27319320ae0))
+
+
+### Bug Fixes
+
+* Fix Terraform 0.12+ warning on project_services ([#467](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/467)) ([e223f77](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/e223f77bd8510f5459ed4278f23c5b36f64836ee))
+* Restore usage of var.enable_apis variable for project services submodule ([#473](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/473)) ([05d1465](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/05d1465d03608310deebb6edde1657d2a50dd0cf))
+
+## [9.1.0](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v9.0.0...v9.1.0) (2020-09-23)
+
+
+### Features
+
+* Add budget notification channel ([#456](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/456)) ([9bc317e](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/9bc317e763f767d5666f6876fdae91b3e9a6b200))
+* Add Dataflow to Shared VPC API service accounts ([#458](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/458)) ([0c5adf3](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/0c5adf3d147233a41b3480d1b2bd178629e26fae))
+* Add service identity provisioning support ([#450](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/450)) ([3954a89](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/3954a898bbc2a9b90852d7c33e57565cb04f14d0))
+
+
+### Bug Fixes
+
+* Restore shared VPC outputs ([#441](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/441)) ([1b558f3](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/1b558f38f85a75f7cc70f0b89ad25d81cc9ac402)), closes [#438](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/438)
+* Upgrade gcloud module to 2.0.0 ([#449](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/449)) ([099cdcc](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/099cdcce28642b045337b4ca0a0c54a9949d9285))
+
 ## [9.0.0](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v8.1.0...v9.0.0) (2020-08-13)
 
 

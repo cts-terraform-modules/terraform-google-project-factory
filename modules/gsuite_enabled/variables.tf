@@ -16,13 +16,14 @@
 
 variable "lien" {
   description = "Add a lien on the project to prevent accidental deletion"
-  default     = "false"
-  type        = string
+  default     = false
+  type        = bool
 }
 
 variable "random_project_id" {
   description = "Adds a suffix of 4 random characters to the `project_id`"
-  default     = "false"
+  type        = bool
+  default     = false
 }
 
 variable "org_id" {
@@ -78,6 +79,18 @@ variable "sa_group" {
   default     = ""
 }
 
+variable "create_project_sa" {
+  description = "Whether the default service account for the project shall be created"
+  type        = bool
+  default     = true
+}
+
+variable "project_sa_name" {
+  description = "Default service account name for the project."
+  type        = string
+  default     = "project-service-account"
+}
+
 variable "sa_role" {
   description = "A role to give the default Service Account for the project (defaults to none)"
   default     = ""
@@ -96,17 +109,6 @@ variable "usage_bucket_name" {
 
 variable "usage_bucket_prefix" {
   description = "Prefix in the GCS bucket to store GCE usage reports in (optional)"
-  default     = ""
-}
-
-variable "credentials_path" {
-  description = "Path to a service account credentials file with rights to run the Project Factory. If this file is absent Terraform will fall back to Application Default Credentials."
-  default     = ""
-}
-
-variable "impersonate_service_account" {
-  description = "An optional service account to impersonate. If this service account is not specified, Terraform will fall back to credential file or Application Default Credentials."
-  type        = string
   default     = ""
 }
 
@@ -150,13 +152,14 @@ variable "api_sa_group" {
 
 variable "auto_create_network" {
   description = "Create the default network"
-  default     = "false"
+  type        = bool
+  default     = false
 }
 
 variable "disable_services_on_destroy" {
   description = "Whether project services will be disabled when the resources are destroyed"
-  default     = "true"
-  type        = string
+  type        = bool
+  default     = true
 }
 
 variable "default_service_account" {
@@ -167,20 +170,20 @@ variable "default_service_account" {
 
 variable "disable_dependent_services" {
   description = "Whether services that are enabled and which depend on this service should also be disabled when this service is destroyed."
-  default     = "true"
-  type        = string
+  default     = true
+  type        = bool
 }
 
-variable "shared_vpc_enabled" {
+variable "enable_shared_vpc_service_project" {
   description = "If shared VPC should be used"
   type        = bool
   default     = false
 }
 
-variable "python_interpreter_path" {
-  description = "Python interpreter path for precondition check script."
-  type        = string
-  default     = "python3"
+variable "enable_shared_vpc_host_project" {
+  description = "If this project is a shared VPC host project. If true, you must *not* set shared_vpc variable. Default is false."
+  type        = bool
+  default     = false
 }
 
 variable "budget_amount" {
@@ -195,20 +198,25 @@ variable "budget_alert_pubsub_topic" {
   default     = null
 }
 
+variable "budget_monitoring_notification_channels" {
+  description = "A list of monitoring notification channels in the form `[projects/{project_id}/notificationChannels/{channel_id}]`. A maximum of 5 channels are allowed."
+  type        = list(string)
+  default     = []
+}
+
 variable "budget_alert_spent_percents" {
   description = "A list of percentages of the budget to alert on when threshold is exceeded"
   type        = list(number)
   default     = [0.5, 0.7, 1.0]
 }
 
-variable "use_tf_google_credentials_env_var" {
-  description = "Use GOOGLE_CREDENTIALS environment variable to run gcloud auth activate-service-account with."
-  type        = bool
-  default     = false
-}
-
-variable "skip_gcloud_download" {
-  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
-  type        = bool
-  default     = false
+variable "consumer_quotas" {
+  description = "The quotas configuration you want to override for the project."
+  type = list(object({
+    service = string,
+    metric  = string,
+    limit   = string,
+    value   = string,
+  }))
+  default = []
 }

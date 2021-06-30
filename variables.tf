@@ -42,10 +42,16 @@ variable "project_id" {
   default     = ""
 }
 
-variable "shared_vpc" {
+variable "svpc_host_project_id" {
   description = "The ID of the host project which hosts the shared VPC"
   type        = string
   default     = ""
+}
+
+variable "enable_shared_vpc_host_project" {
+  description = "If this project is a shared VPC host project. If true, you must *not* set svpc_host_project_id variable. Default is false."
+  type        = bool
+  default     = false
 }
 
 variable "billing_account" {
@@ -71,6 +77,18 @@ variable "group_role" {
   default     = "roles/editor"
 }
 
+variable "create_project_sa" {
+  description = "Whether the default service account for the project shall be created"
+  type        = bool
+  default     = true
+}
+
+variable "project_sa_name" {
+  description = "Default service account name for the project."
+  type        = string
+  default     = "project-service-account"
+}
+
 variable "sa_role" {
   description = "A role to give the default Service Account for the project (defaults to none)"
   type        = string
@@ -83,6 +101,20 @@ variable "activate_apis" {
   default     = ["compute.googleapis.com"]
 }
 
+variable "activate_api_identities" {
+  description = <<EOF
+    The list of service identities (Google Managed service account for the API) to force-create for the project (e.g. in order to grant additional roles).
+    APIs in this list will automatically be appended to `activate_apis`.
+    Not including the API in this list will follow the default behaviour for identity creation (which is usually when the first resource using the API is created).
+    Any roles (e.g. service agent role) must be explicitly listed. See https://cloud.google.com/iam/docs/understanding-roles#service-agent-roles-roles for a list of related roles.
+  EOF
+  type = list(object({
+    api   = string
+    roles = list(string)
+  }))
+  default = []
+}
+
 variable "usage_bucket_name" {
   description = "Name of a GCS bucket to store GCE usage reports in (optional)"
   type        = string
@@ -91,18 +123,6 @@ variable "usage_bucket_name" {
 
 variable "usage_bucket_prefix" {
   description = "Prefix in the GCS bucket to store GCE usage reports in (optional)"
-  type        = string
-  default     = ""
-}
-
-variable "credentials_path" {
-  description = "Path to a service account credentials file with rights to run the Project Factory. If this file is absent Terraform will fall back to Application Default Credentials."
-  type        = string
-  default     = ""
-}
-
-variable "impersonate_service_account" {
-  description = "An optional service account to impersonate. This cannot be used with credentials_path. If this service account is not specified and credentials_path is absent, the module will use Application Default Credentials."
   type        = string
   default     = ""
 }
@@ -143,6 +163,24 @@ variable "bucket_versioning" {
   default     = false
 }
 
+variable "bucket_labels" {
+  description = " A map of key/value label pairs to assign to the bucket (optional)"
+  type        = map
+  default     = {}
+}
+
+variable "bucket_force_destroy" {
+  description = "Force the deletion of all objects within the GCS bucket when deleting the bucket (optional)"
+  type        = bool
+  default     = false
+}
+
+variable "bucket_ula" {
+  description = "Enable Uniform Bucket Level Access"
+  type        = bool
+  default     = true
+}
+
 variable "auto_create_network" {
   description = "Create the default network"
   type        = bool
@@ -157,8 +195,8 @@ variable "lien" {
 
 variable "disable_services_on_destroy" {
   description = "Whether project services will be disabled when the resources are destroyed"
-  default     = "true"
-  type        = string
+  default     = true
+  type        = bool
 }
 
 variable "default_service_account" {
@@ -173,27 +211,15 @@ variable "disable_dependent_services" {
   type        = bool
 }
 
-variable "python_interpreter_path" {
-  description = "Python interpreter path for precondition check script."
-  type        = string
-  default     = "python3"
-}
-
-variable "pip_executable_path" {
-  description = "Pip executable path for precondition requirements.txt install."
-  type        = string
-  default     = "pip3"
-}
-
-variable "use_tf_google_credentials_env_var" {
-  description = "Use GOOGLE_CREDENTIALS environment variable to run gcloud auth activate-service-account with."
-  type        = bool
-  default     = false
-}
-
 variable "budget_amount" {
   description = "The amount to use for a budget alert"
   type        = number
+  default     = null
+}
+
+variable "budget_display_name" {
+  description = "The display name of the budget. If not set defaults to `Budget For <projects[0]|All Projects>` "
+  type        = string
   default     = null
 }
 
@@ -203,16 +229,16 @@ variable "budget_alert_pubsub_topic" {
   default     = null
 }
 
+variable "budget_monitoring_notification_channels" {
+  description = "A list of monitoring notification channels in the form `[projects/{project_id}/notificationChannels/{channel_id}]`. A maximum of 5 channels are allowed."
+  type        = list(string)
+  default     = []
+}
+
 variable "budget_alert_spent_percents" {
   description = "A list of percentages of the budget to alert on when threshold is exceeded"
   type        = list(number)
   default     = [0.5, 0.7, 1.0]
-}
-
-variable "skip_gcloud_download" {
-  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
-  type        = bool
-  default     = false
 }
 
 variable "vpc_service_control_attach_enabled" {
@@ -225,4 +251,21 @@ variable "vpc_service_control_perimeter_name" {
   description = "The name of a VPC Service Control Perimeter to add the created project to"
   type        = string
   default     = null
+}
+
+variable "grant_services_security_admin_role" {
+  description = "Whether or not to grant Kubernetes Engine Service Agent the Security Admin role on the host project so it can manage firewall rules"
+  type        = bool
+  default     = false
+}
+
+variable "consumer_quotas" {
+  description = "The quotas configuration you want to override for the project."
+  type = list(object({
+    service = string,
+    metric  = string,
+    limit   = string,
+    value   = string,
+  }))
+  default = []
 }

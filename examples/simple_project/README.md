@@ -12,10 +12,9 @@ Expected variables:
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| billing\_account | The ID of the billing account to associate this project with | string | n/a | yes |
-| credentials\_path | Path to a service account credentials file with rights to run the Project Factory. If this file is absent Terraform will fall back to Application Default Credentials. | string | `""` | no |
-| organization\_id | The organization id for the associated services | string | n/a | yes |
+|------|-------------|------|---------|:--------:|
+| billing\_account | The ID of the billing account to associate this project with | `any` | n/a | yes |
+| organization\_id | The organization id for the associated services | `any` | n/a | yes |
 
 ## Outputs
 

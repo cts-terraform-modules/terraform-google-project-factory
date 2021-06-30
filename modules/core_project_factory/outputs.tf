@@ -19,15 +19,13 @@ output "project_name" {
 }
 
 output "project_id" {
-  value = element(
-    concat(
-      [module.project_services.project_id],
-      [google_project.main.project_id],
-      [var.shared_vpc_enabled ? google_compute_shared_vpc_service_project.shared_vpc_attachment[0].id : ""],
-    ),
-    0,
-  )
-  depends_on = [module.project_services]
+  value = module.project_services.project_id
+  depends_on = [
+    module.project_services,
+    google_project.main,
+    google_compute_shared_vpc_service_project.shared_vpc_attachment,
+    google_compute_shared_vpc_host_project.shared_vpc_host,
+  ]
 }
 
 output "project_number" {
@@ -36,27 +34,27 @@ output "project_number" {
 }
 
 output "service_account_id" {
-  value       = google_service_account.default_service_account.account_id
+  value       = var.create_project_sa ? google_service_account.default_service_account[0].account_id : ""
   description = "The id of the default service account"
 }
 
 output "service_account_display_name" {
-  value       = google_service_account.default_service_account.display_name
+  value       = var.create_project_sa ? google_service_account.default_service_account[0].display_name : ""
   description = "The display name of the default service account"
 }
 
 output "service_account_email" {
-  value       = google_service_account.default_service_account.email
+  value       = var.create_project_sa ? google_service_account.default_service_account[0].email : ""
   description = "The email of the default service account"
 }
 
 output "service_account_name" {
-  value       = google_service_account.default_service_account.name
+  value       = var.create_project_sa ? google_service_account.default_service_account[0].name : ""
   description = "The fully-qualified name of the default service account"
 }
 
 output "service_account_unique_id" {
-  value       = google_service_account.default_service_account.unique_id
+  value       = var.create_project_sa ? google_service_account.default_service_account[0].unique_id : ""
   description = "The unique id of the default service account"
 }
 
@@ -88,4 +86,9 @@ output "api_s_account_fmt" {
 output "enabled_apis" {
   description = "Enabled APIs in the project"
   value       = module.project_services.enabled_apis
+}
+
+output "enabled_api_identities" {
+  description = "Enabled API identities in the project"
+  value       = module.project_services.enabled_api_identities
 }

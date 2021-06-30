@@ -31,37 +31,53 @@ module "project-factory" {
   group_email                        = module.gsuite_group.email
   group_role                         = var.group_role
   lien                               = var.lien
-  manage_group                       = var.group_name != "" ? "true" : "false"
+  manage_group                       = var.group_name != "" ? true : false
   random_project_id                  = var.random_project_id
   org_id                             = var.org_id
   name                               = var.name
   project_id                         = var.project_id
-  shared_vpc                         = var.shared_vpc
-  shared_vpc_enabled                 = var.shared_vpc != ""
+  shared_vpc                         = var.svpc_host_project_id
+  enable_shared_vpc_service_project  = var.svpc_host_project_id != ""
+  enable_shared_vpc_host_project     = var.enable_shared_vpc_host_project
   billing_account                    = var.billing_account
   folder_id                          = var.folder_id
+  create_project_sa                  = var.create_project_sa
+  project_sa_name                    = var.project_sa_name
   sa_role                            = var.sa_role
   activate_apis                      = var.activate_apis
+  activate_api_identities            = var.activate_api_identities
   usage_bucket_name                  = var.usage_bucket_name
   usage_bucket_prefix                = var.usage_bucket_prefix
-  credentials_path                   = var.credentials_path
-  impersonate_service_account        = var.impersonate_service_account
   shared_vpc_subnets                 = var.shared_vpc_subnets
   labels                             = var.labels
   bucket_project                     = var.bucket_project
   bucket_name                        = var.bucket_name
   bucket_location                    = var.bucket_location
   bucket_versioning                  = var.bucket_versioning
+  bucket_labels                      = var.bucket_labels
+  bucket_force_destroy               = var.bucket_force_destroy
+  bucket_ula                         = var.bucket_ula
   auto_create_network                = var.auto_create_network
   disable_services_on_destroy        = var.disable_services_on_destroy
   default_service_account            = var.default_service_account
   disable_dependent_services         = var.disable_dependent_services
-  python_interpreter_path            = var.python_interpreter_path
-  pip_executable_path                = var.pip_executable_path
-  use_tf_google_credentials_env_var  = var.use_tf_google_credentials_env_var
-  skip_gcloud_download               = var.skip_gcloud_download
   vpc_service_control_attach_enabled = var.vpc_service_control_attach_enabled
   vpc_service_control_perimeter_name = var.vpc_service_control_perimeter_name
+}
+
+/******************************************
+  Setting API service accounts for shared VPC
+ *****************************************/
+module "shared_vpc_access" {
+  source                             = "./modules/shared_vpc_access"
+  enable_shared_vpc_service_project  = var.svpc_host_project_id != "" ? true : false
+  host_project_id                    = var.svpc_host_project_id
+  service_project_id                 = module.project-factory.project_id
+  active_apis                        = module.project-factory.enabled_apis
+  shared_vpc_subnets                 = var.shared_vpc_subnets
+  service_project_number             = module.project-factory.project_number
+  lookup_project_numbers             = false
+  grant_services_security_admin_role = var.grant_services_security_admin_role
 }
 
 /******************************************
@@ -71,9 +87,21 @@ module "budget" {
   source        = "./modules/budget"
   create_budget = var.budget_amount != null
 
-  projects             = [module.project-factory.project_id]
-  billing_account      = var.billing_account
-  amount               = var.budget_amount
-  alert_spent_percents = var.budget_alert_spent_percents
-  alert_pubsub_topic   = var.budget_alert_pubsub_topic
+  projects                         = [module.project-factory.project_id]
+  billing_account                  = var.billing_account
+  amount                           = var.budget_amount
+  alert_spent_percents             = var.budget_alert_spent_percents
+  alert_pubsub_topic               = var.budget_alert_pubsub_topic
+  monitoring_notification_channels = var.budget_monitoring_notification_channels
+  display_name                     = var.budget_display_name != null ? var.budget_display_name : null
+}
+
+/******************************************
+  Quota to override if metrics are set
+ *****************************************/
+module "quotas" {
+  source = "./modules/quota_manager"
+
+  project_id      = module.project-factory.project_id
+  consumer_quotas = var.consumer_quotas
 }
