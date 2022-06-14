@@ -59,6 +59,12 @@ variable "alert_spent_percents" {
   default     = [0.5, 0.7, 1.0]
 }
 
+variable "alert_spend_basis" {
+  description = "The type of basis used to determine if spend has passed the threshold"
+  type        = string
+  default     = "CURRENT_SPEND"
+}
+
 variable "alert_pubsub_topic" {
   description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`"
   type        = string
@@ -69,4 +75,14 @@ variable "monitoring_notification_channels" {
   description = "A list of monitoring notification channels in the form `[projects/{project_id}/notificationChannels/{channel_id}]`. A maximum of 5 channels are allowed."
   type        = list(string)
   default     = []
+}
+
+variable "labels" {
+  description = "A single label and value pair specifying that usage from only this set of labeled resources should be included in the budget."
+  type        = map(string)
+  default     = {}
+  validation {
+    condition     = length(var.labels) <= 1
+    error_message = "Only 0 or 1 labels may be supplied for the budget filter."
+  }
 }

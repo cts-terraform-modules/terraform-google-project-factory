@@ -39,6 +39,7 @@ module "project-factory" {
   shared_vpc                         = var.svpc_host_project_id
   enable_shared_vpc_service_project  = var.svpc_host_project_id != ""
   enable_shared_vpc_host_project     = var.enable_shared_vpc_host_project
+  grant_network_role                 = var.grant_network_role
   billing_account                    = var.billing_account
   folder_id                          = var.folder_id
   create_project_sa                  = var.create_project_sa
@@ -63,6 +64,7 @@ module "project-factory" {
   disable_dependent_services         = var.disable_dependent_services
   vpc_service_control_attach_enabled = var.vpc_service_control_attach_enabled
   vpc_service_control_perimeter_name = var.vpc_service_control_perimeter_name
+  default_network_tier               = var.default_network_tier
 }
 
 /******************************************
@@ -78,6 +80,7 @@ module "shared_vpc_access" {
   service_project_number             = module.project-factory.project_number
   lookup_project_numbers             = false
   grant_services_security_admin_role = var.grant_services_security_admin_role
+  grant_network_role                 = var.grant_network_role
 }
 
 /******************************************
@@ -91,9 +94,11 @@ module "budget" {
   billing_account                  = var.billing_account
   amount                           = var.budget_amount
   alert_spent_percents             = var.budget_alert_spent_percents
+  alert_spend_basis                = var.budget_alert_spend_basis
   alert_pubsub_topic               = var.budget_alert_pubsub_topic
   monitoring_notification_channels = var.budget_monitoring_notification_channels
   display_name                     = var.budget_display_name != null ? var.budget_display_name : null
+  labels                           = var.budget_labels
 }
 
 /******************************************
@@ -104,4 +109,15 @@ module "quotas" {
 
   project_id      = module.project-factory.project_id
   consumer_quotas = var.consumer_quotas
+}
+
+/******************************************
+  Essential Contacts to create if set
+ *****************************************/
+module "essential_contacts" {
+  source = "./modules/essential_contacts"
+
+  project_id         = module.project-factory.project_id
+  essential_contacts = var.essential_contacts
+  language_tag       = var.language_tag
 }

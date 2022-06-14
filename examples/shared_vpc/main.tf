@@ -20,25 +20,6 @@ locals {
 }
 
 /******************************************
-  Provider configuration
- *****************************************/
-provider "google" {
-  version = "~> 3.30"
-}
-
-provider "google-beta" {
-  version = "~> 3.30"
-}
-
-provider "null" {
-  version = "~> 2.1"
-}
-
-provider "random" {
-  version = "~> 2.2"
-}
-
-/******************************************
   Host Project Creation
  *****************************************/
 module "host-project" {
@@ -49,6 +30,13 @@ module "host-project" {
   folder_id                      = var.folder_id
   billing_account                = var.billing_account
   enable_shared_vpc_host_project = true
+  default_network_tier           = var.default_network_tier
+
+  activate_apis = [
+    "compute.googleapis.com",
+    "cloudresourcemanager.googleapis.com"
+  ]
+
 }
 
 /******************************************
@@ -56,7 +44,7 @@ module "host-project" {
  *****************************************/
 module "vpc" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 2.5.0"
+  version = "~> 4.1"
 
   project_id                             = module.host-project.project_id
   network_name                           = var.network_name
@@ -78,7 +66,7 @@ module "vpc" {
   ]
 
   secondary_ranges = {
-    "${local.subnet_01}" = [
+    (local.subnet_01) = [
       {
         range_name    = "${local.subnet_01}-01"
         ip_cidr_range = "192.168.64.0/24"
@@ -89,7 +77,7 @@ module "vpc" {
       },
     ]
 
-    "${local.subnet_02}" = [
+    (local.subnet_02) = [
       {
         range_name    = "${local.subnet_02}-01"
         ip_cidr_range = "192.168.66.0/24"
@@ -154,6 +142,43 @@ module "service-project-b" {
   }]
 
   disable_services_on_destroy = false
+}
+
+/******************************************
+  Third Service Project Creation
+  To test the grant_network_role
+ *****************************************/
+module "service-project-c" {
+  source = "../../modules/svpc_service_project"
+
+  name              = "c-${var.service_project_name}"
+  random_project_id = false
+
+  org_id          = var.organization_id
+  folder_id       = var.folder_id
+  billing_account = var.billing_account
+
+  shared_vpc         = module.host-project.project_id
+  shared_vpc_subnets = module.vpc.subnets_self_links
+
+  activate_apis = [
+    "compute.googleapis.com",
+    "container.googleapis.com",
+    "dataproc.googleapis.com",
+    "composer.googleapis.com",
+    "dataflow.googleapis.com"
+  ]
+
+  activate_api_identities = [{
+    api = "healthcare.googleapis.com"
+    roles = [
+      "roles/healthcare.serviceAgent",
+      "roles/bigquery.jobUser",
+    ]
+  }]
+
+  disable_services_on_destroy = false
+  grant_network_role          = false
 }
 
 /******************************************

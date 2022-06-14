@@ -14,14 +14,6 @@
  * limitations under the License.
  */
 
-provider "google" {
-  version = "~> 3.30"
-}
-
-provider "google-beta" {
-  version = "~> 3.30"
-}
-
 provider "gsuite" {
   impersonated_user_email = var.gsuite_admin_account
 
@@ -29,16 +21,6 @@ provider "gsuite" {
     "https://www.googleapis.com/auth/admin.directory.group",
     "https://www.googleapis.com/auth/admin.directory.group.member",
   ]
-
-  version = "~> 0.1.12"
-}
-
-provider "null" {
-  version = "~> 2.1"
-}
-
-provider "random" {
-  version = "~> 2.2"
 }
 
 locals {
@@ -58,7 +40,7 @@ locals {
 
 module "vpc" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 2.0"
+  version = ">= 4.0.1, < 5.0"
 
   network_name = "pf-test-int-full-${var.random_string_for_testing}"
   project_id   = var.shared_vpc
@@ -80,13 +62,13 @@ module "vpc" {
   ]
 
   secondary_ranges = {
-    "${local.subnet_name_01}" = [
+    (local.subnet_name_01) = [
       {
         range_name    = "${local.subnet_name_01}-secondary"
         ip_cidr_range = "192.168.64.0/24"
       },
     ]
-    "${local.subnet_name_02}" = [
+    (local.subnet_name_02) = [
       {
         range_name    = "${local.subnet_name_02}-secondary"
         ip_cidr_range = "192.168.74.0/24"

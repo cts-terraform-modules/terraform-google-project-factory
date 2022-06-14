@@ -69,9 +69,10 @@ The roles granted are specifically:
 | budget\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded | `list(number)` | <pre>[<br>  0.5,<br>  0.7,<br>  1<br>]</pre> | no |
 | budget\_amount | The amount to use for a budget alert | `number` | `null` | no |
 | budget\_monitoring\_notification\_channels | A list of monitoring notification channels in the form `[projects/{project_id}/notificationChannels/{channel_id}]`. A maximum of 5 channels are allowed. | `list(string)` | `[]` | no |
-| consumer\_quotas | The quotas configuration you want to override for the project. | <pre>list(object({<br>    service = string,<br>    metric  = string,<br>    limit   = string,<br>    value   = string,<br>  }))</pre> | `[]` | no |
+| consumer\_quotas | The quotas configuration you want to override for the project. | <pre>list(object({<br>    service    = string,<br>    metric     = string,<br>    dimensions = any,<br>    limit      = string,<br>    value      = string,<br>  }))</pre> | `[]` | no |
 | create\_group | Whether to create the group or not | `bool` | `false` | no |
 | create\_project\_sa | Whether the default service account for the project shall be created | `bool` | `true` | no |
+| default\_network\_tier | Default Network Service Tier for resources created in this project. If unset, the value will not be modified. See https://cloud.google.com/network-tiers/docs/using-network-service-tiers and https://cloud.google.com/network-tiers. | `string` | `""` | no |
 | default\_service\_account | Project default service account setting: can be one of `delete`, `deprivilege`, `disable`, or `keep`. | `string` | `"disable"` | no |
 | disable\_dependent\_services | Whether services that are enabled and which depend on this service should also be disabled when this service is destroyed. | `bool` | `true` | no |
 | disable\_services\_on\_destroy | Whether project services will be disabled when the resources are destroyed | `bool` | `true` | no |

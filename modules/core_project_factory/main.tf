@@ -100,13 +100,19 @@ module "project_services" {
 /******************************************
   Shared VPC configuration
  *****************************************/
+resource "time_sleep" "wait_5_seconds" {
+  count           = var.vpc_service_control_attach_enabled ? 1 : 0
+  depends_on      = [google_access_context_manager_service_perimeter_resource.service_perimeter_attachment[0], google_project_service.enable_access_context_manager[0]]
+  create_duration = "5s"
+}
+
 resource "google_compute_shared_vpc_service_project" "shared_vpc_attachment" {
   provider = google-beta
 
   count           = var.enable_shared_vpc_service_project ? 1 : 0
   host_project    = var.shared_vpc
   service_project = google_project.main.project_id
-  depends_on      = [module.project_services]
+  depends_on      = [time_sleep.wait_5_seconds[0], module.project_services]
 }
 
 resource "google_compute_shared_vpc_host_project" "shared_vpc_host" {
@@ -173,7 +179,7 @@ resource "google_service_account_iam_member" "service_account_grant_to_group" {
   compute.networkUser role granted to G Suite group, APIs Service account, and Project Service Account
  *****************************************************************************************************************/
 resource "google_project_iam_member" "controlling_group_vpc_membership" {
-  count = var.enable_shared_vpc_service_project && length(var.shared_vpc_subnets) == 0 ? local.shared_vpc_users_length : 0
+  count = var.grant_network_role && var.enable_shared_vpc_service_project && length(var.shared_vpc_subnets) == 0 ? local.shared_vpc_users_length : 0
 
   project = var.shared_vpc
   role    = "roles/compute.networkUser"
@@ -189,7 +195,7 @@ resource "google_project_iam_member" "controlling_group_vpc_membership" {
  *************************************************************************************/
 resource "google_compute_subnetwork_iam_member" "service_account_role_to_vpc_subnets" {
   provider = google-beta
-  count    = var.enable_shared_vpc_service_project && length(var.shared_vpc_subnets) > 0 && var.create_project_sa ? length(var.shared_vpc_subnets) : 0
+  count    = var.grant_network_role && var.enable_shared_vpc_service_project && length(var.shared_vpc_subnets) > 0 && var.create_project_sa ? length(var.shared_vpc_subnets) : 0
 
   subnetwork = element(
     split("/", var.shared_vpc_subnets[count.index]),
@@ -213,7 +219,7 @@ resource "google_compute_subnetwork_iam_member" "service_account_role_to_vpc_sub
 resource "google_compute_subnetwork_iam_member" "group_role_to_vpc_subnets" {
   provider = google-beta
 
-  count = var.enable_shared_vpc_service_project && length(var.shared_vpc_subnets) > 0 && var.manage_group ? length(var.shared_vpc_subnets) : 0
+  count = var.grant_network_role && var.enable_shared_vpc_service_project && length(var.shared_vpc_subnets) > 0 && var.manage_group ? length(var.shared_vpc_subnets) : 0
   subnetwork = element(
     split("/", var.shared_vpc_subnets[count.index]),
     index(
@@ -236,7 +242,7 @@ resource "google_compute_subnetwork_iam_member" "group_role_to_vpc_subnets" {
 resource "google_compute_subnetwork_iam_member" "apis_service_account_role_to_vpc_subnets" {
   provider = google-beta
 
-  count = var.enable_shared_vpc_service_project && length(var.shared_vpc_subnets) > 0 ? length(var.shared_vpc_subnets) : 0
+  count = var.grant_network_role && var.enable_shared_vpc_service_project && length(var.shared_vpc_subnets) > 0 ? length(var.shared_vpc_subnets) : 0
   subnetwork = element(
     split("/", var.shared_vpc_subnets[count.index]),
     index(
@@ -332,6 +338,7 @@ resource "google_storage_bucket_iam_member" "api_s_account_storage_admin_on_proj
  *****************************************/
 resource "google_access_context_manager_service_perimeter_resource" "service_perimeter_attachment" {
   count          = var.vpc_service_control_attach_enabled ? 1 : 0
+  depends_on     = [google_service_account.default_service_account]
   perimeter_name = var.vpc_service_control_perimeter_name
   resource       = "projects/${google_project.main.number}"
 }
@@ -343,4 +350,13 @@ resource "google_project_service" "enable_access_context_manager" {
   count   = var.vpc_service_control_attach_enabled ? 1 : 0
   project = google_project.main.number
   service = "accesscontextmanager.googleapis.com"
+}
+
+/******************************************
+  Configure default Network Service Tier
+ *****************************************/
+resource "google_compute_project_default_network_tier" "default" {
+  count        = var.default_network_tier != "" ? 1 : 0
+  project      = google_project.main.number
+  network_tier = var.default_network_tier
 }

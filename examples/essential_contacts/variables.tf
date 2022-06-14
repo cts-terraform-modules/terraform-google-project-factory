@@ -14,6 +14,27 @@
  * limitations under the License.
  */
 
-terraform {
-  required_version = ">=0.13.0"
+variable "project_id" {
+  type        = string
+  description = "The GCP project to create Essential Contacts in"
+}
+
+variable "org_id" {
+  type        = string
+  description = "The organization ID."
+}
+
+variable "folder_id" {
+  type        = string
+  description = "The ID of a folder to host this project."
+}
+
+variable "billing_account" {
+  type        = string
+  description = "Billing account ID."
+}
+
+variable "random_string_for_testing" {
+  type        = string
+  description = "A random string of characters to be appended to resource names to ensure uniqueness"
 }

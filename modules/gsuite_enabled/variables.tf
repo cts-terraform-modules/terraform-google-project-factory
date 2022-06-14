@@ -213,10 +213,17 @@ variable "budget_alert_spent_percents" {
 variable "consumer_quotas" {
   description = "The quotas configuration you want to override for the project."
   type = list(object({
-    service = string,
-    metric  = string,
-    limit   = string,
-    value   = string,
+    service    = string,
+    metric     = string,
+    dimensions = any,
+    limit      = string,
+    value      = string,
   }))
   default = []
+}
+
+variable "default_network_tier" {
+  description = "Default Network Service Tier for resources created in this project. If unset, the value will not be modified. See https://cloud.google.com/network-tiers/docs/using-network-service-tiers and https://cloud.google.com/network-tiers."
+  type        = string
+  default     = ""
 }

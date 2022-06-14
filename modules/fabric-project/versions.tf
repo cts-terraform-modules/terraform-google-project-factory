@@ -20,13 +20,13 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 3.43, < 4.0"
+      version = ">= 3.43, < 5.0"
     }
   }
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-google-project-factory:fabric-project/v11.0.0"
+    module_name = "blueprints/terraform/terraform-google-project-factory:fabric-project/v13.0.0"
   }
   provider_meta "google-beta" {
-    module_name = "blueprints/terraform/terraform-google-project-factory:fabric-project/v11.0.0"
+    module_name = "blueprints/terraform/terraform-google-project-factory:fabric-project/v13.0.0"
   }
 }

@@ -6,6 +6,110 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Extending the adopted spec, each change should have a link to its corresponding pull request appended.
 
+## [13.0.0](https://github.com/terraform-google-modules/terraform-google-project-factory/compare/v12.0.0...v13.0.0) (2022-04-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* add upgrade guide, update provider constraints (#705)
+* Add dimensions argument to consumer quota override (#683)
+* replace grant_services_network_role with grant_network_role for networkUser role management (#697)
+
+### Features
+
+* Add dimensions argument to consumer quota override ([#683](https://github.com/terraform-google-modules/terraform-google-project-factory/issues/683)) ([d1d7624](https://github.com/terraform-google-modules/terraform-google-project-factory/commit/d1d7624bc5379f33a2b23ba7da9deb41b61a97f6))
+* replace grant_services_network_role with grant_network_role for networkUser role management ([#697](https://github.com/terraform-google-modules/terraform-google-project-factory/issues/697)) ([d309270](https://github.com/terraform-google-modules/terraform-google-project-factory/commit/d309270a6c6ace6e2b5bc792073bfee9a07c365d))
+* setup-sa.sh use add-iam-policy-binding ([#689](https://github.com/terraform-google-modules/terraform-google-project-factory/issues/689)) ([616ede9](https://github.com/terraform-google-modules/terraform-google-project-factory/commit/616ede9456cc8f86ef7995192af3473d17ee7946))
+
+
+### Bug Fixes
+
+* add upgrade guide, update provider constraints ([#705](https://github.com/terraform-google-modules/terraform-google-project-factory/issues/705)) ([644f596](https://github.com/terraform-google-modules/terraform-google-project-factory/commit/644f596cbf7a8bcd2fe963e5e696b74d7b469141))
+* update TPG version constraints to allow 4.0 and TF v0.13+ format ([#700](https://github.com/terraform-google-modules/terraform-google-project-factory/issues/700)) ([b66a080](https://github.com/terraform-google-modules/terraform-google-project-factory/commit/b66a080fc3d72938d8110958588aaf5dfe749e99))
+* use module release rather than repo head ([#704](https://github.com/terraform-google-modules/terraform-google-project-factory/issues/704)) ([522f3cc](https://github.com/terraform-google-modules/terraform-google-project-factory/commit/522f3cc1183aad85d21b3a4ade58fc501684086b))
+* VPC-SC SA destroy sequence with default SA ([#691](https://github.com/terraform-google-modules/terraform-google-project-factory/issues/691)) ([0e5420b](https://github.com/terraform-google-modules/terraform-google-project-factory/commit/0e5420b5b45288e4af8a8bc9a8490c91240ada13))
+
+## [12.0.0](https://github.com/terraform-google-modules/terraform-google-project-factory/compare/v11.3.1...v12.0.0) (2022-03-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* Budget module should support filtering on labels (#627)
+* Minimum provider version increased to v4.5 (#627)
+
+### Features
+
+* Add Essential Contacts support ([#617](https://github.com/terraform-google-modules/terraform-google-project-factory/issues/617)) ([f89e1a0](https://github.com/terraform-google-modules/terraform-google-project-factory/commit/f89e1a0ad8485d9e14716116c65e0f911ce01d0f))
+* Budget module should support filtering on labels ([#627](https://github.com/terraform-google-modules/terraform-google-project-factory/issues/627)) ([44a9fec](https://github.com/terraform-google-modules/terraform-google-project-factory/commit/44a9feca98daf719f091fb8eeac2cc9e292cfc0d))
+* expose spend_basis for budget alerts  ([#681](https://github.com/terraform-google-modules/terraform-google-project-factory/issues/681)) ([ea3961c](https://github.com/terraform-google-modules/terraform-google-project-factory/commit/ea3961ce9b81c37e52577c70c781892eec260c03))
+
+### [11.3.1](https://github.com/terraform-google-modules/terraform-google-project-factory/compare/v11.3.0...v11.3.1) (2022-01-11)
+
+
+### Bug Fixes
+
+* ConflictsWith in project org_id & folder_id ([#676](https://github.com/terraform-google-modules/terraform-google-project-factory/issues/676)) ([2e59c9a](https://github.com/terraform-google-modules/terraform-google-project-factory/commit/2e59c9a9e828c7b13ce3fd85d2531472d939eecd))
+* grant roles/billing.viewer to the seed service account in helper. ([#666](https://github.com/terraform-google-modules/terraform-google-project-factory/issues/666)) ([e444e2a](https://github.com/terraform-google-modules/terraform-google-project-factory/commit/e444e2ae47632bfc7f1c060be6db1ab15e1cfb9d))
+* Wrap budget_name output with length check ([#673](https://github.com/terraform-google-modules/terraform-google-project-factory/issues/673)) ([21871b2](https://github.com/terraform-google-modules/terraform-google-project-factory/commit/21871b2a147d654f6d59f868fd1a3fd5ad33c84b))
+
+## [11.3.0](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v11.2.3...v11.3.0) (2021-12-01)
+
+
+### Features
+
+* add network service tier setting ([#640](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/640)) ([f5cce9e](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/f5cce9e6851031065aa7afdc9ff1bf424352ccef))
+* update TPG version constraints to allow 4.0 ([#636](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/636)) ([dd9beb3](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/dd9beb3da1bcc0ab2ac2a95c6ad7e238031ef33a))
+
+### [11.2.3](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v11.2.2...v11.2.3) (2021-10-20)
+
+
+### Bug Fixes
+
+* Update required_providers in budget submodule ([#631](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/631)) ([de67066](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/de670668331e3154dd2a6d30f35bab5aa6ab7c92))
+
+### [11.2.2](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v11.2.1...v11.2.2) (2021-10-13)
+
+
+### Bug Fixes
+
+* Allow explicit provider configuration in module ([#624](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/624)) ([621c527](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/621c5275527a0d392a842bd71e7ad88e2eba1835))
+* billing_budget resource should use GA provider ([#626](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/626)) ([b6d7bf1](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/b6d7bf1af2062e557b3fb2c883879554e10d7702))
+* Don't attempt to activate service identity for compute.googleapis.com ([#628](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/628)) ([777092c](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/777092c279ef3f4f5115a04c8d195a778e94514a))
+
+### [11.2.1](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v11.2.0...v11.2.1) (2021-09-23)
+
+
+### Bug Fixes
+
+* plumb grant_services_network_role for root module ([#619](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/619)) ([560396d](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/560396d5ed61392344da3fddbbf0d3b2760b9206))
+
+## [11.2.0](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v11.1.1...v11.2.0) (2021-09-23)
+
+
+### Features
+
+* added the grant_services_network_role flag to control network IAM ([#618](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/618)) ([f116dd5](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/f116dd5456ddd5453bf958b90d71ddcd4e898cd7))
+* Give VPC Access Agent Service Account for Cloud Run permissions on Shared VPC ([#615](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/615)) ([87d2df0](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/87d2df092daa2ea5efd36a98fbbd946ce5722bf7))
+
+### [11.1.1](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v11.1.0...v11.1.1) (2021-07-29)
+
+
+### Bug Fixes
+
+* Added dependancies on Shared VPC attachment to work with VPC service controls ([#608](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/608)) ([59b7b96](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/59b7b96c847ceae205da1bf04e9f4965cfee67b3))
+
+## [11.1.0](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v11.0.0...v11.1.0) (2021-07-01)
+
+
+### Features
+
+* allow budget display name customization ([#599](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/599)) ([f54adbf](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/f54adbfb86201069f94e28c14b20a693e3595329))
+
+
+### Bug Fixes
+
+* Using project_id output is not forcing to wait for the fabric-project creation ([#601](https://www.github.com/terraform-google-modules/terraform-google-project-factory/issues/601)) ([551833a](https://www.github.com/terraform-google-modules/terraform-google-project-factory/commit/551833abbafdc24dbf0bb7b61812c36d3f2896e7))
+
 ## [11.0.0](https://www.github.com/terraform-google-modules/terraform-google-project-factory/compare/v10.3.2...v11.0.0) (2021-06-12)
 
 

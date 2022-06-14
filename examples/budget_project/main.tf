@@ -14,22 +14,6 @@
  * limitations under the License.
  */
 
-provider "google" {
-  version = "~> 3.30"
-}
-
-provider "google-beta" {
-  version = "~> 3.30"
-}
-
-provider "null" {
-  version = "~> 2.1"
-}
-
-provider "random" {
-  version = "~> 2.2"
-}
-
 resource "random_string" "suffix" {
   length  = 4
   special = false
@@ -44,6 +28,13 @@ module "budget_project" {
   folder_id         = var.folder_id
   billing_account   = var.billing_account
   budget_amount     = var.budget_amount
+
+  activate_apis = [
+    "compute.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "billingbudgets.googleapis.com"
+  ]
+
 }
 
 
@@ -64,4 +55,7 @@ module "additional_budget" {
   services               = var.budget_services
   alert_spent_percents   = var.budget_alert_spent_percents
   alert_pubsub_topic     = "projects/${module.budget_project.project_id}/topics/${google_pubsub_topic.budget.name}"
+  labels = {
+    "cost-center" : "dept-x"
+  }
 }

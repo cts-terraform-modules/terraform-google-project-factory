@@ -12,7 +12,8 @@ To include G Suite integration for creating groups and adding Service Accounts i
 
 ## Compatibility
 
-This module is meant for use with Terraform 0.13. If you haven't
+This module is meant for use with Terraform 0.13+ and tested using Terraform 1.0+. If you find incompatibilities using Terraform >=0.13, please open an issue.
+ If you haven't
 [upgraded][terraform-0.13-upgrade] and need a Terraform
 0.12.x-compatible version of this module, the last released version
 intended for Terraform 0.12.x is [9.2.0].
@@ -114,29 +115,35 @@ determining that location is as follows:
 | auto\_create\_network | Create the default network | `bool` | `false` | no |
 | billing\_account | The ID of the billing account to associate this project with | `string` | n/a | yes |
 | bucket\_force\_destroy | Force the deletion of all objects within the GCS bucket when deleting the bucket (optional) | `bool` | `false` | no |
-| bucket\_labels | A map of key/value label pairs to assign to the bucket (optional) | `map` | `{}` | no |
+| bucket\_labels | A map of key/value label pairs to assign to the bucket (optional) | `map(string)` | `{}` | no |
 | bucket\_location | The location for a GCS bucket to create (optional) | `string` | `"US"` | no |
 | bucket\_name | A name for a GCS bucket to create (in the bucket\_project project), useful for Terraform state (optional) | `string` | `""` | no |
 | bucket\_project | A project to create a GCS bucket (bucket\_name) in, useful for Terraform state (optional) | `string` | `""` | no |
 | bucket\_ula | Enable Uniform Bucket Level Access | `bool` | `true` | no |
 | bucket\_versioning | Enable versioning for a GCS bucket to create (optional) | `bool` | `false` | no |
 | budget\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` | `string` | `null` | no |
+| budget\_alert\_spend\_basis | The type of basis used to determine if spend has passed the threshold | `string` | `"CURRENT_SPEND"` | no |
 | budget\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded | `list(number)` | <pre>[<br>  0.5,<br>  0.7,<br>  1<br>]</pre> | no |
 | budget\_amount | The amount to use for a budget alert | `number` | `null` | no |
 | budget\_display\_name | The display name of the budget. If not set defaults to `Budget For <projects[0]|All Projects>` | `string` | `null` | no |
+| budget\_labels | A single label and value pair specifying that usage from only this set of labeled resources should be included in the budget. | `map(string)` | `{}` | no |
 | budget\_monitoring\_notification\_channels | A list of monitoring notification channels in the form `[projects/{project_id}/notificationChannels/{channel_id}]`. A maximum of 5 channels are allowed. | `list(string)` | `[]` | no |
-| consumer\_quotas | The quotas configuration you want to override for the project. | <pre>list(object({<br>    service = string,<br>    metric  = string,<br>    limit   = string,<br>    value   = string,<br>  }))</pre> | `[]` | no |
+| consumer\_quotas | The quotas configuration you want to override for the project. | <pre>list(object({<br>    service    = string,<br>    metric     = string,<br>    dimensions = map(string),<br>    limit      = string,<br>    value      = string,<br>  }))</pre> | `[]` | no |
 | create\_project\_sa | Whether the default service account for the project shall be created | `bool` | `true` | no |
+| default\_network\_tier | Default Network Service Tier for resources created in this project. If unset, the value will not be modified. See https://cloud.google.com/network-tiers/docs/using-network-service-tiers and https://cloud.google.com/network-tiers. | `string` | `""` | no |
 | default\_service\_account | Project default service account setting: can be one of `delete`, `deprivilege`, `disable`, or `keep`. | `string` | `"disable"` | no |
 | disable\_dependent\_services | Whether services that are enabled and which depend on this service should also be disabled when this service is destroyed. | `bool` | `true` | no |
 | disable\_services\_on\_destroy | Whether project services will be disabled when the resources are destroyed | `bool` | `true` | no |
 | domain | The domain name (optional). | `string` | `""` | no |
 | enable\_shared\_vpc\_host\_project | If this project is a shared VPC host project. If true, you must *not* set svpc\_host\_project\_id variable. Default is false. | `bool` | `false` | no |
+| essential\_contacts | A mapping of users or groups to be assigned as Essential Contacts to the project, specifying a notification category | `map(list(string))` | `{}` | no |
 | folder\_id | The ID of a folder to host this project | `string` | `""` | no |
+| grant\_network\_role | Whether or not to grant networkUser role on the host project/subnets | `bool` | `true` | no |
 | grant\_services\_security\_admin\_role | Whether or not to grant Kubernetes Engine Service Agent the Security Admin role on the host project so it can manage firewall rules | `bool` | `false` | no |
 | group\_name | A group to control the project by being assigned group\_role (defaults to project editor) | `string` | `""` | no |
 | group\_role | The role to give the controlling group (group\_name) over the project (defaults to project editor) | `string` | `"roles/editor"` | no |
 | labels | Map of labels for project | `map(string)` | `{}` | no |
+| language\_tag | Language code to be used for essential contacts notifications | `string` | `"en-US"` | no |
 | lien | Add a lien on the project to prevent accidental deletion | `bool` | `false` | no |
 | name | The name for the project | `string` | n/a | yes |
 | org\_id | The organization ID. | `string` | n/a | yes |
@@ -182,23 +189,9 @@ determining that location is as follows:
 -   [gcloud sdk](https://cloud.google.com/sdk/install) >= 269.0.0
 -   [jq](https://stedolan.github.io/jq/) >= 1.6
 -   [Terraform](https://www.terraform.io/downloads.html) >= 0.13.0
--   [terraform-provider-google] plugin >= 3.1, < 4.0
--   [terraform-provider-google-beta] plugin >= 3.1, < 4.0
+-   [terraform-provider-google] plugin ~> 4.11
+-   [terraform-provider-google-beta] plugin ~> 4.11
 -   [terraform-provider-gsuite] plugin 0.1.x if GSuite functionality is desired
-
-#### `terraform-provider-google` version 2.x
-
-Starting with version `6.3.0` of this module, `google_billing_budget` resources can now be created. This increases the minimum `terraform-provider-google` version to `3.1.0`
-
-To continue to use a version `>= 2.1, < 3.1` of the google provider pin this module to `6.2.1`. Or use the `core_project_factory` submodule directly.
-
-```hcl
-module "project-factory" {
-  source  = "terraform-google-modules/project-factory/google"
-  version = "~> 6.2.1"
-  ...
-}
-```
 
 ### Permissions
 
@@ -251,44 +244,19 @@ permissions:
 
 #### Specifying credentials
 
-The Project Factory uses external scripts to perform a few tasks that are not implemented
-by Terraform providers. Because of this the Project Factory needs a copy of service account
-credentials to pass to these scripts. Credentials can be provided via two mechanisms:
+The Project Factory module uses the [Google Terraform provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#authentication)
+to authenticate all GCP API calls.
+To configure credentials, you should configure the `google` and `google-beta` providers.
 
-1. Explicitly passed to the Project Factory with the `credentials_path` variable. This approach
-   typically uses the same credentials for the `google` provider and the Project Factory:
-    ```terraform
-    provider "google" {
-      credentials = "${file(var.credentials_path)}"
-      version = "~> 3.3"
-    }
+```terraform
+provider "google" {
+  credentials = "${file(var.credentials_path)}"
+}
 
-    module "project-factory" {
-      source = "terraform-google-modules/project-factory/google"
-
-      name             = "explicit-credentials"
-      credentials_path = "${var.credentials_path}"
-      # other variables follow ...
-    }
-    ```
-2. Implicitly provided by the [Application Default Credentials][application-default-credentials]
-   flow, which typically uses the `GOOGLE_APPLICATION_CREDENTIALS` environment variable:
-   ```terraform
-   # `GOOGLE_APPLICATION_CREDENTIALS` must be set in the environment before Terraform is run.
-   provider "google" {
-     # Terraform will check the `GOOGLE_APPLICATION_CREDENTIALS` variable, so no `credentials`
-     # value is needed here.
-      version = "~> 3.3"
-   }
-
-   module "project-factory" {
-      source = "terraform-google-modules/project-factory/google"
-
-      name = "adc-credentials"
-      # Project Factory will also check the `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
-      # other variables follow ...
-   }
-   ```
+provider "google-beta" {
+  credentials = "${file(var.credentials_path)}"
+}
+```
 
 ### APIs
 
@@ -342,6 +310,14 @@ the root of the organization into a folder. The bug and workaround is described
 [here](https://github.com/terraform-providers/terraform-provider-google/issues/1701),
 but as a general best practice it is easier to create all projects within
 folders to start. Moving projects between different folders *is* supported.
+
+### Deleting default service accounts
+
+[Default SAs](https://cloud.google.com/iam/docs/service-accounts#default) can be removed by setting `default_service_account` input variable to `delete`, but there can be certain scenarios where the default SAs are required. Hence some considerations to be aware of:
+1. [Using App Engine SA](https://cloud.google.com/appengine/docs/flexible/python/default-service-account).
+1. Cloud Scheduler dependency on AppEngine(default SA). Default SA is required to be able to setup [Cloud scheduler](https://cloud.google.com/scheduler/docs/setup#use_gcloud_to_create_a_project_with_an_app_engine_app), please refer to the [document](https://cloud.google.com/scheduler/docs/setup#use_gcloud_to_create_a_project_with_an_app_engine_app) for more upto date information.
+
+With a combination of project-factory's default behavior, [disable](https://github.com/terraform-google-modules/terraform-google-project-factory/blob/master/variables.tf#L202-L206), and setting [constraints/iam.automaticIamGrantsForDefaultServiceAccounts](https://cloud.google.com/resource-manager/docs/organization-policy/org-policy-constraints) org constraint will address removing the default editor IAM role on the SAs and limits the SA usage. However, when the `default_service_account` is set to `delete` please be aware of the default SA dependency for AppEngine/CloudScheduler services. Accounts deleted within 30days can be [restored](https://cloud.google.com/iam/docs/creating-managing-service-accounts#undeleting).
 
 ## G Suite
 

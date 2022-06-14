@@ -14,28 +14,13 @@
  * limitations under the License.
  */
 
-provider "google" {
-  version = "~> 3.30"
-}
-
-provider "google-beta" {
-  version = "~> 3.30"
-}
-
-provider "null" {
-  version = "~> 2.1"
-}
-
-provider "random" {
-  version = "~> 2.2"
-}
-
 locals {
   perimeter_name = "regular_service_perimeter_${var.random_string_for_testing}"
 }
 
 module "regular_service_perimeter_1" {
   source         = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
+  version        = "~> 4.0"
   policy         = var.policy_id
   perimeter_name = local.perimeter_name
   description    = "New service perimeter"
@@ -56,7 +41,8 @@ module "project-factory" {
   activate_apis = [
     "compute.googleapis.com",
     "accesscontextmanager.googleapis.com",
-    "storage-component.googleapis.com"
+    "storage-component.googleapis.com",
+    "cloudresourcemanager.googleapis.com"
   ]
 
   default_service_account     = "DISABLE"

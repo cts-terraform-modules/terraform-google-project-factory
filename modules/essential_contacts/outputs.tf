@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-terraform {
-  required_version = ">= 0.13"
-  required_providers {
-    google = {
-      source = "hashicorp/google"
-    }
-    google-beta = {
-      source = "hashicorp/google-beta"
-    }
-    null = {
-      source = "hashicorp/null"
-    }
-    random = {
-      source = "hashicorp/random"
-    }
-  }
+output "essential_contacts" {
+  description = "Essential Contact resources created"
+  value       = [for contact in google_essential_contacts_contact.contact : contact.name]
+}
+
+output "project_id" {
+  description = "The GCP project you want to enable APIs on"
+  value       = var.project_id
 }

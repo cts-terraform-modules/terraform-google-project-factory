@@ -36,8 +36,7 @@ data "google_project" "project" {
 }
 
 resource "google_billing_budget" "budget" {
-  provider = google-beta
-  count    = var.create_budget ? 1 : 0
+  count = var.create_budget ? 1 : 0
 
   billing_account = var.billing_account
   display_name    = local.display_name
@@ -46,6 +45,7 @@ resource "google_billing_budget" "budget" {
     projects               = local.projects
     credit_types_treatment = var.credit_types_treatment
     services               = local.services
+    labels                 = var.labels
   }
 
   amount {
@@ -58,6 +58,7 @@ resource "google_billing_budget" "budget" {
     for_each = var.alert_spent_percents
     content {
       threshold_percent = threshold_rules.value
+      spend_basis       = var.alert_spend_basis
     }
   }
 
